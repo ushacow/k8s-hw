@@ -5,7 +5,7 @@
 - Create namespace prod. Create users prod_admin, prod_view. Give the user prod_admin admin rights on ns prod, give the user prod_view only view rights on namespace prod.
 - Create a serviceAccount sa-namespace-admin. Grant full rights to namespace default. Create context, authorize using the created sa, check accesses.
 
-### Creating users deploy_view and deploy_edit. Granting access.
+### part1
 ```bash
 bash-3.2$ openssl genrsa -out deploy_view.key 2048
 Generating RSA private key, 2048 bit long modulus
@@ -103,6 +103,10 @@ bash-3.2$ kubectl config use-context deploy_edit
 Switched to context "deploy_edit".
 bash-3.2$ kubectl create deployment nginx --image=nginx -n prod
 deployment.apps/nginx created
+```        
+### part2
+
+```
 bash-3.2$ kubectl create ns prod
 namespace/prod created
 bash-3.2$ openssl genrsa -out prod_admin.key 2048
@@ -139,6 +143,10 @@ NAME                     READY   STATUS    RESTARTS   AGE
 nginx-85b98978db-mb2jd   1/1     Running   0          3m57s
 bash-3.2$ kubectl delete po nginx-85b98978db-mb2jd  -n prod
 Error from server (Forbidden): pods "nginx-85b98978db-mb2jd" is forbidden: User "prod_viewer" cannot delete resource "pods" in API group "" in the namespace "prod"
+```
+### part3
+
+```
 bash-3.2$ kubectl create sa sa-namespace-admin -n default
 bash-3.2$ kubectl apply -f role_sa_namespace_admin.yaml
 bash-3.2$ kubectl get secret sa-namespace-admin-token-r48j2 -n default -o yaml
